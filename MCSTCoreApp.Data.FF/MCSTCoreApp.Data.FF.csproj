@@ -5,9 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Configurations\" />
-    <Folder Include="Extensions\" />
     <Folder Include="Repositories\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MCSTCoreApp.Data\MCSTCoreApp.Data.csproj" />
+    <ProjectReference Include="..\MCSTCoreApp.Infrastructure\MCSTCoreApp.Infrastructure.csproj" />
+    <ProjectReference Include="..\MCSTCoreApp.Utilities\MCSTCoreApp.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

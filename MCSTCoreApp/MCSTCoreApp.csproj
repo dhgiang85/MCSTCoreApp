@@ -18,4 +18,12 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MCSTCoreApp.Application\MCSTCoreApp.Application.csproj" />
+    <ProjectReference Include="..\MCSTCoreApp.Data.FF\MCSTCoreApp.Data.FF.csproj" />
+    <ProjectReference Include="..\MCSTCoreApp.Data\MCSTCoreApp.Data.csproj" />
+    <ProjectReference Include="..\MCSTCoreApp.Infrastructure\MCSTCoreApp.Infrastructure.csproj" />
+    <ProjectReference Include="..\MCSTCoreApp.Utilities\MCSTCoreApp.Utilities.csproj" />
+  </ItemGroup>
+
 </Project>

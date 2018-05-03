@@ -11,4 +11,10 @@
     <Folder Include="ViewModels\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MCSTCoreApp.Data.FF\MCSTCoreApp.Data.FF.csproj" />
+    <ProjectReference Include="..\MCSTCoreApp.Data\MCSTCoreApp.Data.csproj" />
+    <ProjectReference Include="..\MCSTCoreApp.Utilities\MCSTCoreApp.Utilities.csproj" />
+  </ItemGroup>
+
 </Project>
