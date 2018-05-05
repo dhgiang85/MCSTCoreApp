@@ -12,7 +12,7 @@ using System;
 namespace MCSTCoreApp.Data.EF.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20180505061155_intial")]
+    [Migration("20180505090212_intial")]
     partial class intial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -60,7 +60,8 @@ namespace MCSTCoreApp.Data.EF.Migrations
             modelBuilder.Entity("MCSTCoreApp.Data.Entities.AdvertistmentPage", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20);
 
                     b.Property<string>("Name");
 
@@ -91,7 +92,8 @@ namespace MCSTCoreApp.Data.EF.Migrations
             modelBuilder.Entity("MCSTCoreApp.Data.Entities.Announcement", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(128);
 
                     b.Property<string>("Content")
                         .HasMaxLength(250);
@@ -140,18 +142,26 @@ namespace MCSTCoreApp.Data.EF.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("ConcurrencyStamp");
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken();
 
                     b.Property<string>("Description")
                         .HasMaxLength(250);
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasMaxLength(256);
 
-                    b.Property<string>("NormalizedName");
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256);
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppRoles");
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles");
                 });
 
             modelBuilder.Entity("MCSTCoreApp.Data.Entities.AppUser", b =>
@@ -167,13 +177,15 @@ namespace MCSTCoreApp.Data.EF.Migrations
 
                     b.Property<DateTime?>("BirthDay");
 
-                    b.Property<string>("ConcurrencyStamp");
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken();
 
                     b.Property<DateTime>("DateCreated");
 
                     b.Property<DateTime>("DateModified");
 
-                    b.Property<string>("Email");
+                    b.Property<string>("Email")
+                        .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed");
 
@@ -183,9 +195,11 @@ namespace MCSTCoreApp.Data.EF.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
 
-                    b.Property<string>("NormalizedEmail");
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256);
 
-                    b.Property<string>("NormalizedUserName");
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256);
 
                     b.Property<string>("PasswordHash");
 
@@ -199,11 +213,20 @@ namespace MCSTCoreApp.Data.EF.Migrations
 
                     b.Property<bool>("TwoFactorEnabled");
 
-                    b.Property<string>("UserName");
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256);
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppUsers");
+                    b.HasIndex("NormalizedEmail")
+                        .HasName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers");
                 });
 
             modelBuilder.Entity("MCSTCoreApp.Data.Entities.Bill", b =>
@@ -828,7 +851,9 @@ namespace MCSTCoreApp.Data.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppRoleClaims");
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
@@ -844,40 +869,44 @@ namespace MCSTCoreApp.Data.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppUserClaims");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.Property<Guid>("UserId")
-                        .ValueGeneratedOnAdd();
-
                     b.Property<string>("LoginProvider");
-
-                    b.Property<string>("ProviderDisplayName");
 
                     b.Property<string>("ProviderKey");
 
-                    b.HasKey("UserId");
+                    b.Property<string>("ProviderDisplayName");
 
-                    b.ToTable("AppUserLogins");
+                    b.Property<Guid>("UserId");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasAlternateKey("UserId");
+
+                    b.ToTable("AspNetUserLogins");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
-                    b.Property<Guid>("RoleId");
-
                     b.Property<Guid>("UserId");
 
-                    b.HasKey("RoleId", "UserId");
+                    b.Property<Guid>("RoleId");
 
-                    b.ToTable("AppUserRoles");
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasAlternateKey("RoleId", "UserId");
+
+                    b.ToTable("AspNetUserRoles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.Property<Guid>("UserId")
-                        .ValueGeneratedOnAdd();
+                    b.Property<Guid>("UserId");
 
                     b.Property<string>("LoginProvider");
 
@@ -885,9 +914,11 @@ namespace MCSTCoreApp.Data.EF.Migrations
 
                     b.Property<string>("Value");
 
-                    b.HasKey("UserId");
+                    b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AppUserTokens");
+                    b.HasAlternateKey("UserId");
+
+                    b.ToTable("AspNetUserTokens");
                 });
 
             modelBuilder.Entity("MCSTCoreApp.Data.Entities.Advertistment", b =>
@@ -1029,6 +1060,51 @@ namespace MCSTCoreApp.Data.EF.Migrations
                     b.HasOne("MCSTCoreApp.Data.Entities.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+                {
+                    b.HasOne("MCSTCoreApp.Data.Entities.AppRole")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
+                {
+                    b.HasOne("MCSTCoreApp.Data.Entities.AppUser")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+                {
+                    b.HasOne("MCSTCoreApp.Data.Entities.AppUser")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+                {
+                    b.HasOne("MCSTCoreApp.Data.Entities.AppRole")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("MCSTCoreApp.Data.Entities.AppUser")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+                {
+                    b.HasOne("MCSTCoreApp.Data.Entities.AppUser")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

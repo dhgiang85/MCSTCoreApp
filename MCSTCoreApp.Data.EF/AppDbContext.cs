@@ -86,8 +86,9 @@ namespace MCSTCoreApp.Data.EF
             builder.AddConfiguration(new ProductTagConfiguration());
             builder.AddConfiguration(new SystemConfigConfiguration());
             builder.AddConfiguration(new AdvertistmentPositionConfiguration());
-
-            //base.OnModelCreating(builder);
+            builder.AddConfiguration(new AdvertistmentPageConfiguration());
+            builder.AddConfiguration(new AnnouncementConfiguration());
+            base.OnModelCreating(builder);
         }
 
         public override int SaveChanges()

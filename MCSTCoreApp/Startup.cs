@@ -69,7 +69,7 @@ namespace MCSTCoreApp
 
             services.AddTransient<IEmailSender, EmailSender>();
 
-            //services.AddTransient<DbInitializer>();
+            services.AddTransient<DbInitializer>();
 
             services.AddTransient<IProductCategoryRepository, ProductCategoryRepository>();
 
