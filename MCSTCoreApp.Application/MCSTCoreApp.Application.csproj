@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="6.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MCSTCoreApp.Data.EF\MCSTCoreApp.Data.EF.csproj" />
+    <ProjectReference Include="..\MCSTCoreApp.Data\MCSTCoreApp.Data.csproj" />
+    <ProjectReference Include="..\MCSTCoreApp.Utilities\MCSTCoreApp.Utilities.csproj" />
+  </ItemGroup>
+
+</Project>
