@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using MCSTCoreApp.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using MCSTCoreApp.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -15,6 +16,7 @@ namespace MCSTCoreApp.Controllers
     {
         public IActionResult Index()
         {
+            var email = User.GetSpecificClaim("Email");
             return View();
         }
 

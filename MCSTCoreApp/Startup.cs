@@ -16,6 +16,7 @@ using MCSTCoreApp.Data.EF;
 using MCSTCoreApp.Data.EF.Repositories;
 using MCSTCoreApp.Data.Entities;
 using MCSTCoreApp.Data.IRepositories;
+using MCSTCoreApp.Helpers;
 using MCSTCoreApp.Models;
 using MCSTCoreApp.Services;
 using Microsoft.Extensions.Logging;
@@ -68,7 +69,7 @@ namespace MCSTCoreApp
 
             services.AddSingleton(Mapper.Configuration);
             services.AddScoped<IMapper>(sp => new Mapper(sp.GetRequiredService<AutoMapper.IConfigurationProvider>(), sp.GetService));
-
+            services.AddScoped<IUserClaimsPrincipalFactory<AppUser>, CustomClaimsPrincipalFactory>();
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddTransient<DbInitializer>();
