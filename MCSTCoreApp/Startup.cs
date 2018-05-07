@@ -17,6 +17,7 @@ using MCSTCoreApp.Data.EF.Repositories;
 using MCSTCoreApp.Data.Entities;
 using MCSTCoreApp.Data.IRepositories;
 using MCSTCoreApp.Helpers;
+using MCSTCoreApp.Infrastructure.Interfaces;
 using MCSTCoreApp.Models;
 using MCSTCoreApp.Services;
 using Microsoft.Extensions.Logging;
@@ -78,6 +79,8 @@ namespace MCSTCoreApp
 
             services.AddMvc().AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
 
+            services.AddTransient(typeof(IUnitOfWork), typeof(EFUnitOfWork));
+            services.AddTransient(typeof(IRepository<,>), typeof(EFRepository<,>));
             //Repositories
             services.AddTransient<IProductCategoryRepository, ProductCategoryRepository>();
             services.AddTransient<IFunctionRepository, FunctionRepository>();
