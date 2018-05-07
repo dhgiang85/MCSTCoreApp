@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using AutoMapper;
 using MCSTCoreApp.Application.ViewModels.Product;
+using MCSTCoreApp.Application.ViewModels.System;
 using MCSTCoreApp.Data.Entities;
 
 namespace MCSTCoreApp.Application.AutoMapper
@@ -12,6 +13,7 @@ namespace MCSTCoreApp.Application.AutoMapper
         public DomainToViewModelMappingProfile()
         {
             CreateMap<ProductCategory, ProductCategoryViewModel>();
+            CreateMap<Function, FunctionViewModel>();
         }
     }
 }
