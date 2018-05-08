@@ -2,24 +2,78 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MCSTCoreApp.Application.Interfaces;
 using MCSTCoreApp.Application.ViewModels.Product;
+using MCSTCoreApp.Data.Entities;
 using MCSTCoreApp.Data.Enums;
 using MCSTCoreApp.Data.IRepositories;
+using MCSTCoreApp.Infrastructure.Interfaces;
+using MCSTCoreApp.Utilities.Constants;
 using MCSTCoreApp.Utilities.Dtos;
+using MCSTCoreApp.Utilities.Helpers;
 
 namespace MCSTCoreApp.Application.Implementation
 {
     public class ProductService : IProductService
     {
         IProductRepository _productRepository;
+        ITagRepository _tagRepository;
+        IProductTagRepository _productTagRepository;
+        IUnitOfWork _unitOfWork;
 
-        public ProductService(IProductRepository productRepository)
+        public ProductService(IProductRepository productRepository,
+            ITagRepository tagRepository,
+            IUnitOfWork unitOfWork,
+            IProductTagRepository productTagRepository)
         {
             _productRepository = productRepository;
+            _tagRepository = tagRepository;
+            _productTagRepository = productTagRepository;
+            _unitOfWork = unitOfWork;
+        }
+        public ProductViewModel Add(ProductViewModel productVm)
+        {
+            List<ProductTag> productTags = new List<ProductTag>();
+            if (!string.IsNullOrEmpty(productVm.Tags))
+            {
+                string[] tags = productVm.Tags.Split(',');
+                foreach (string t in tags)
+                {
+                    var tagId = TextHelper.ToUnsignString(t);
+                    if (!_tagRepository.FindAll(x => x.Id == tagId).Any())
+                    {
+                        Tag tag = new Tag
+                        {
+                            Id = tagId,
+                            Name = t,
+                            Type = CommonConstants.ProductTag
+                        };
+                        _tagRepository.Add(tag);
+                    }
+
+                    ProductTag productTag = new ProductTag
+                    {
+                        TagId = tagId
+                    };
+                    productTags.Add(productTag);
+                }
+                var product = Mapper.Map<ProductViewModel, Product>(productVm);
+                foreach (var productTag in productTags)
+                {
+                    product.ProductTags.Add(productTag);
+                }
+                _productRepository.Add(product);
+
+            }
+            return productVm;
         }
 
+        public void Delete(int id)
+        {
+            _productRepository.Remove(id);
+        }
         public void Dispose()
         {
             GC.SuppressFinalize(this);
@@ -43,7 +97,7 @@ namespace MCSTCoreApp.Application.Implementation
             //    .Skip((page - 1) * pageSize).Take(pageSize);
             
             var data = query.ProjectTo<ProductViewModel>().ToList();
-            data = data.OrderByDescending(x => x.DateCreated).Skip(page - 1).Take(pageSize).ToList();
+            data = data.OrderByDescending(x => x.DateCreated).Skip((page - 1) * pageSize).Take(pageSize).ToList();
             var paginationSet = new PagedResult<ProductViewModel>()
             {
                 Results = data,
@@ -52,6 +106,50 @@ namespace MCSTCoreApp.Application.Implementation
                 PageSize = pageSize
             };
             return paginationSet;
+        }
+        public ProductViewModel GetById(int id)
+        {
+            return Mapper.Map<Product, ProductViewModel>(_productRepository.FindById(id));
+        }
+
+        public void Save()
+        {
+            _unitOfWork.Commit();
+        }
+
+        public void Update(ProductViewModel productVm)
+        {
+            List<ProductTag> productTags = new List<ProductTag>();
+
+            if (!string.IsNullOrEmpty(productVm.Tags))
+            {
+                string[] tags = productVm.Tags.Split(',');
+                foreach (string t in tags)
+                {
+                    var tagId = TextHelper.ToUnsignString(t);
+                    if (!_tagRepository.FindAll(x => x.Id == tagId).Any())
+                    {
+                        Tag tag = new Tag();
+                        tag.Id = tagId;
+                        tag.Name = t;
+                        tag.Type = CommonConstants.ProductTag;
+                        _tagRepository.Add(tag);
+                    }
+                    _productTagRepository.RemoveMultiple(_productTagRepository.FindAll(x => x.Id == productVm.Id).ToList());
+                    ProductTag productTag = new ProductTag
+                    {
+                        TagId = tagId
+                    };
+                    productTags.Add(productTag);
+                }
+            }
+
+            var product = Mapper.Map<ProductViewModel, Product>(productVm);
+            foreach (var productTag in productTags)
+            {
+                product.ProductTags.Add(productTag);
+            }
+            _productRepository.Update(product);
         }
     }
 }
