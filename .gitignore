@@ -287,3 +287,4 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 MCSTCoreApp/Logs/
+MCSTCoreApp/wwwroot/uploaded/
