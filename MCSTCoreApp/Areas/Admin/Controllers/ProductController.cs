@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using MCSTCoreApp.Application.Interfaces;
 using MCSTCoreApp.Application.ViewModels.Product;
+using MCSTCoreApp.Authorization;
 using MCSTCoreApp.Utilities.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -14,14 +16,19 @@ namespace MCSTCoreApp.Areas.Admin.Controllers
     {
         IProductService _productService;
         IProductCategoryService _productCategoryService;
-        public ProductController(IProductService productService, IProductCategoryService productCategoryService)
+        private readonly IAuthorizationService _authorizationService;
+        public ProductController(IProductService productService, IProductCategoryService productCategoryService, IAuthorizationService authorizationService)
         {
             _productService = productService;
             _productCategoryService = productCategoryService;
+            _authorizationService = authorizationService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var result = await _authorizationService.AuthorizeAsync(User, "PRODUCT_LIST", Operations.Read);
+            if (result.Succeeded == false)
+                return new RedirectResult("/Admin/Login/Index");
             return View();
         }
 

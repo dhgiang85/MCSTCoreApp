@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using MCSTCoreApp.Application.Interfaces;
 using MCSTCoreApp.Application.ViewModels.System;
+using MCSTCoreApp.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -13,12 +15,19 @@ namespace MCSTCoreApp.Areas.Admin.Controllers
     {
         private readonly IUserService _userService;
 
-        public UserController(IUserService userService)
+        private readonly IAuthorizationService _authorizationService;
+
+        public UserController(IUserService userService, IAuthorizationService authorizationService)
         {
             _userService = userService;
+            _authorizationService = authorizationService;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var result = await _authorizationService.AuthorizeAsync(User, "USER", Operations.Read);
+            if (result.Succeeded == false)
+                return new RedirectResult("/Admin/Login/Index");
+
             return View();
         }
         public IActionResult GetAll()

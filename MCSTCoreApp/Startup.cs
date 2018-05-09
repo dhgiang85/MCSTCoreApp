@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MCSTCoreApp.Application.Implementation;
 using MCSTCoreApp.Application.Interfaces;
+using MCSTCoreApp.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,7 @@ using MCSTCoreApp.Helpers;
 using MCSTCoreApp.Infrastructure.Interfaces;
 using MCSTCoreApp.Models;
 using MCSTCoreApp.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
 
@@ -94,6 +96,8 @@ namespace MCSTCoreApp
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IRoleService, RoleService>();
+
+            services.AddTransient<IAuthorizationHandler, BaseResourceAuthorizationHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
