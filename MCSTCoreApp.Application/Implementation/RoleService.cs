@@ -76,10 +76,11 @@ namespace MCSTCoreApp.Application.Implementation
                 || x.Description.Contains(keyword));
 
             int totalRow = query.Count();
-            query = query.Skip((page - 1) * pageSize)
-               .Take(pageSize);
+            //query = query.Skip((page - 1) * pageSize)
+            //   .Take(pageSize);
 
             var data = query.ProjectTo<AppRoleViewModel>().ToList();
+            data = data.Skip((page - 1) * pageSize).Take(pageSize).ToList();
             var paginationSet = new PagedResult<AppRoleViewModel>()
             {
                 Results = data,
@@ -135,7 +136,7 @@ namespace MCSTCoreApp.Application.Implementation
 
         public async Task UpdateAsync(AppRoleViewModel roleVm)
         {
-            var role = await _roleManager.FindByIdAsync(roleVm.Id);
+            var role = await _roleManager.FindByIdAsync(roleVm.Id.ToString());
             role.Description = roleVm.Description;
             role.Name = roleVm.Name;
             await _roleManager.UpdateAsync(role);
