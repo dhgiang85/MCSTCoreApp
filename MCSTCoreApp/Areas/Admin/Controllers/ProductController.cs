@@ -110,7 +110,7 @@ namespace MCSTCoreApp.Areas.Admin.Controllers
                 return new OkObjectResult(id);
             }
         }
-        [HttpPost]
+        
         [HttpPost]
         public IActionResult SaveQuantities(int productId, List<ProductQuantityViewModel> quantities)
         {
@@ -125,8 +125,22 @@ namespace MCSTCoreApp.Areas.Admin.Controllers
             var quantities = _productService.GetQuantities(productId);
             return new OkObjectResult(quantities);
         }
-
         [HttpPost]
+        public IActionResult SaveImages(int productId, string[] images)
+        {
+            _productService.AddImages(productId, images);
+            _productService.Save();
+            return new OkObjectResult(images);
+        }
+
+        [HttpGet]
+        public IActionResult GetImages(int productId)
+        {
+            var images = _productService.GetImages(productId);
+            return new OkObjectResult(images);
+        }
+        [HttpPost]
+
         public IActionResult ImportExcel(IList<IFormFile> files, int categoryId)
         {
             if (files != null && files.Count > 0)

@@ -22,6 +22,7 @@ namespace MCSTCoreApp.Application.AutoMapper
             CreateMap<Color, ColorViewModel>();
             CreateMap<Size, SizeViewModel>();
             CreateMap<ProductQuantity, ProductQuantityViewModel>().MaxDepth(2);
+            CreateMap<ProductImage, ProductImageViewModel>().MaxDepth(2);
 
         }
     }

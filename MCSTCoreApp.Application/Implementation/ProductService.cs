@@ -24,11 +24,13 @@ namespace MCSTCoreApp.Application.Implementation
         ITagRepository _tagRepository;
         IProductTagRepository _productTagRepository;
         IProductQuantityRepository _productQuantityRepository;
+        IProductImageRepository _productImageRepository;
         IUnitOfWork _unitOfWork;
 
         public ProductService(IProductRepository productRepository,
             ITagRepository tagRepository,
             IProductQuantityRepository productQuantityRepository,
+            IProductImageRepository productImageRepository,
             IUnitOfWork unitOfWork,
             IProductTagRepository productTagRepository)
         {
@@ -36,6 +38,7 @@ namespace MCSTCoreApp.Application.Implementation
             _tagRepository = tagRepository;
             _productTagRepository = productTagRepository;
             _productQuantityRepository = productQuantityRepository;
+            _productImageRepository = productImageRepository;
             _unitOfWork = unitOfWork;
         }
         public ProductViewModel Add(ProductViewModel productVm)
@@ -211,6 +214,26 @@ namespace MCSTCoreApp.Application.Implementation
                 product.ProductTags.Add(productTag);
             }
             _productRepository.Update(product);
+        }
+        public List<ProductImageViewModel> GetImages(int productId)
+        {
+            return _productImageRepository.FindAll(x => x.ProductId == productId)
+                .ProjectTo<ProductImageViewModel>().ToList();
+        }
+
+        public void AddImages(int productId, string[] images)
+        {
+            _productImageRepository.RemoveMultiple(_productImageRepository.FindAll(x => x.ProductId == productId).ToList());
+            foreach (var image in images)
+            {
+                _productImageRepository.Add(new ProductImage()
+                {
+                    Path = image,
+                    ProductId = productId,
+                    Caption = string.Empty
+                });
+            }
+
         }
     }
 }
