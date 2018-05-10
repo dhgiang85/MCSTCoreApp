@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using MCSTCoreApp.Application.Interfaces;
 using MCSTCoreApp.Application.ViewModels.Product;
 using MCSTCoreApp.Authorization;
 using MCSTCoreApp.Utilities.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -17,11 +21,17 @@ namespace MCSTCoreApp.Areas.Admin.Controllers
         IProductService _productService;
         IProductCategoryService _productCategoryService;
         private readonly IAuthorizationService _authorizationService;
-        public ProductController(IProductService productService, IProductCategoryService productCategoryService, IAuthorizationService authorizationService)
+        private readonly IHostingEnvironment _hostingEnvironment;
+
+        public ProductController(IProductService productService, 
+            IProductCategoryService productCategoryService, 
+            IAuthorizationService authorizationService,
+            IHostingEnvironment hostingEnvironment)
         {
             _productService = productService;
             _productCategoryService = productCategoryService;
             _authorizationService = authorizationService;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         public async Task<IActionResult> Index()
@@ -97,6 +107,35 @@ namespace MCSTCoreApp.Areas.Admin.Controllers
 
                 return new OkObjectResult(id);
             }
+        }
+        [HttpPost]
+        public IActionResult ImportExcel(IList<IFormFile> files, int categoryId)
+        {
+            if (files != null && files.Count > 0)
+            {
+                var file = files[0];
+                var filename = ContentDispositionHeaderValue
+                    .Parse(file.ContentDisposition)
+                    .FileName
+                    .Trim('"');
+
+                string folder = _hostingEnvironment.WebRootPath + $@"\uploaded\excels";
+                if (!Directory.Exists(folder))
+                {
+                    Directory.CreateDirectory(folder);
+                }
+                string filePath = Path.Combine(folder, filename);
+
+                using (FileStream fs = System.IO.File.Create(filePath))
+                {
+                    file.CopyTo(fs);
+                    fs.Flush();
+                }
+                _productService.ImportExcel(filePath, categoryId);
+                _productService.Save();
+                return new OkObjectResult(filePath);
+            }
+            return new NoContentResult();
         }
         #endregion
     }
