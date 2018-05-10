@@ -288,3 +288,4 @@ __pycache__/
 *.xsd.cs
 MCSTCoreApp/Logs/
 MCSTCoreApp/wwwroot/uploaded/
+MCSTCoreApp/wwwroot/export-files/
