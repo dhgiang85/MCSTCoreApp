@@ -111,6 +111,22 @@ namespace MCSTCoreApp.Areas.Admin.Controllers
             }
         }
         [HttpPost]
+        [HttpPost]
+        public IActionResult SaveQuantities(int productId, List<ProductQuantityViewModel> quantities)
+        {
+            _productService.AddQuantity(productId, quantities);
+            _productService.Save();
+            return new OkObjectResult(quantities);
+        }
+
+        [HttpGet]
+        public IActionResult GetQuantities(int productId)
+        {
+            var quantities = _productService.GetQuantities(productId);
+            return new OkObjectResult(quantities);
+        }
+
+        [HttpPost]
         public IActionResult ImportExcel(IList<IFormFile> files, int categoryId)
         {
             if (files != null && files.Count > 0)
