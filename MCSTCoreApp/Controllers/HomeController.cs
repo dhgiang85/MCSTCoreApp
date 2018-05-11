@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MCSTCoreApp.Controllers
 {
-    [Authorize]
+
     public class HomeController : Controller
     {
         public IActionResult Index()
