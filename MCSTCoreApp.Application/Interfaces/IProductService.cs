@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using MCSTCoreApp.Application.ViewModels.Common;
 using MCSTCoreApp.Application.ViewModels.Product;
 using MCSTCoreApp.Utilities.Dtos;
 
@@ -39,5 +40,11 @@ namespace MCSTCoreApp.Application.Interfaces
         List<ProductViewModel> GetLastest(int top);
 
         List<ProductViewModel> GetHotProduct(int top);
+
+        List<ProductViewModel> GetRelatedProducts(int id, int top);
+
+        List<ProductViewModel> GetUpsellProducts(int top);
+
+        List<TagViewModel> GetProductTags(int productId);
     }
 }
