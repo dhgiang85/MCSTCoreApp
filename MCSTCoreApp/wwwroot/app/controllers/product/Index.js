@@ -218,7 +218,7 @@
                     SeoPageTitle: seoPageTitle,
                     SeoAlias: seoAlias,
                     SeoKeywords: seoKeyword,
-                    SeoDescription: seoMetaDescription
+                    SeoDescription: seoMetaDescription,
                 },
                 dataType: "json",
                 beforeSend: function () {
