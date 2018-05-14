@@ -15,6 +15,7 @@ using Microsoft.Extensions.Options;
 using MCSTCoreApp.Models;
 using MCSTCoreApp.Models.AccountViewModels;
 using MCSTCoreApp.Services;
+using PaulMiami.AspNetCore.Mvc.Recaptcha;
 
 namespace MCSTCoreApp.Controllers
 {
@@ -221,6 +222,7 @@ namespace MCSTCoreApp.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        [ValidateRecaptcha]
         [Route("register.html")]
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
@@ -238,7 +240,7 @@ namespace MCSTCoreApp.Controllers
                 PhoneNumber = model.PhoneNumber,
                 BirthDay = model.BirthDay,
                 Status = Status.Active,
-                Avatar = string.Empty
+                Avatar = model.Avatar
             };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
