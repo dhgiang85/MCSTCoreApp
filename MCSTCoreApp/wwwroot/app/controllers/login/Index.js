@@ -23,8 +23,9 @@
                 var user = $('#txtUserName').val();
                 var password = $('#txtPassword').val();
                 login(user, password);
-            }
+                console.log(user);
 
+            }
         });
     }
 
@@ -32,7 +33,7 @@
         $.ajax({
             type: 'POST',
             data: {
-                UserName: user,
+                Email: user,
                 Password: pass
             },
             dateType: 'json',
