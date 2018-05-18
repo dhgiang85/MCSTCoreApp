@@ -70,6 +70,11 @@ namespace MCSTCoreApp
                 SiteKey = Configuration["Recaptcha:SiteKey"],
                 SecretKey = Configuration["Recaptcha:SecretKey"]
             });
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromHours(2);
+                options.Cookie.HttpOnly = true;
+            });
             services.AddAutoMapper();
             // Add application services.
             services.AddScoped<UserManager<AppUser>, UserManager<AppUser>>();

@@ -46,5 +46,7 @@ namespace MCSTCoreApp.Application.Interfaces
         List<ProductViewModel> GetUpsellProducts(int top);
 
         List<TagViewModel> GetProductTags(int productId);
+
+        bool CheckAvailability(int productId, int size, int color);
     }
 }

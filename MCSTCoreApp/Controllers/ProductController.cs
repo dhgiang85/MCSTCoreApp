@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MCSTCoreApp.Application.Interfaces;
 using MCSTCoreApp.Models.ProductViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 
 namespace MCSTCoreApp.Controllers
@@ -13,13 +14,16 @@ namespace MCSTCoreApp.Controllers
     {
         IProductService _productService;
         IProductCategoryService _productCategoryService;
+        IBillService _billService;
         IConfiguration _configuration;
         public ProductController(IProductService productService, IConfiguration configuration,
+            IBillService billService,
             IProductCategoryService productCategoryService)
         {
             _productService = productService;
             _productCategoryService = productCategoryService;
             _configuration = configuration;
+            _billService = billService;
         }
         [Route("products.html")]
         public IActionResult Index()
@@ -68,6 +72,16 @@ namespace MCSTCoreApp.Controllers
             model.UpsellProducts = _productService.GetUpsellProducts(6);
             model.ProductImages = _productService.GetImages(id);
             model.Tags = _productService.GetProductTags(id);
+            model.Colors = _billService.GetColors().Select(x => new SelectListItem()
+            {
+                Text = x.Name,
+                Value = x.Id.ToString()
+            }).ToList();
+            model.Sizes = _billService.GetSizes().Select(x => new SelectListItem()
+            {
+                Text = x.Name,
+                Value = x.Id.ToString()
+            }).ToList();
             return View(model);
         }
 

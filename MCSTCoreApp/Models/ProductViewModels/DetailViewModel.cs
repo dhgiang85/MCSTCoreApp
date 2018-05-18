@@ -4,12 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using MCSTCoreApp.Application.ViewModels.Common;
 using MCSTCoreApp.Application.ViewModels.Product;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MCSTCoreApp.Models.ProductViewModels
 {
     public class DetailViewModel
     {
         public ProductViewModel Product { get; set; }
+
+        public bool Available { set; get; }
 
         public List<ProductViewModel> RelatedProducts { get; set; }
 
@@ -22,5 +25,9 @@ namespace MCSTCoreApp.Models.ProductViewModels
         public List<ProductViewModel> LastestProducts { get; set; }
 
         public List<TagViewModel> Tags { set; get; }
+
+        public List<SelectListItem> Colors { set; get; }
+
+        public List<SelectListItem> Sizes { set; get; }
     }
 }
